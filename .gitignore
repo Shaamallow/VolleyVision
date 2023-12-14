@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Big folder
+*.zip
+
 # C extensions
 *.so
 
@@ -10,6 +13,12 @@ __pycache__/
 outputs/**
 !/outputs/**/
 !/outputs/**/.gitkeep
+
+# Dataset for training
+data/Tracking/dataset/
+
+# runs folder
+runs/**
 
 # Distribution / packaging
 .Python
