@@ -5,19 +5,37 @@ import base64
 import argparse
 import numpy as np
 from tqdm import tqdm
-from roboflow import Roboflow
-
+import ultralytics
+from ultralytics import YOLO
+import torch
 
 def process_image(input_path, output_path):
-    output = model.predict(input_path).json()['predictions'][0]
-    segmentation_mask = output['segmentation_mask']
-    image_width = output['image']['width']
-    image_height = output['image']['height']
-    decoded_mask = base64.b64decode(segmentation_mask)
-    mask_array = np.frombuffer(decoded_mask, dtype=np.uint8)
-    mask_image = cv2.imdecode(mask_array, cv2.IMREAD_GRAYSCALE)
-    mask_image = cv2.resize(mask_image, (image_width, image_height))
+    img = cv2.imread(input_path)
+    image_height, image_width = img.shape[:2]
+    
+    model = YOLO(f'./models/yolov8_court/court_detection_best.pt')
+    input = cv2.resize(img, (640, 640))
+    results = model.predict(input, conf=0.25, save=False)
+    result = results[0]
+    # get array results
+    masks = result.masks.data
+    boxes = result.boxes.data
+    # extract classes
+    clss = boxes[:, 5]
+    # get indices of results where class is 0
+    court_indices = torch.where(clss == 0)
+    # use these indices to extract the relevant masks
+    court_masks = masks[court_indices[0]]
 
+    # scale for visualizing results (optional)
+    court_mask = torch.any(court_masks, dim=0).int() * 255
+    mask_image = court_mask.cpu().numpy()
+    # convert to CV_8UC1 image
+    mask_image = mask_image.astype(np.uint8)
+    # Resize the mask image to the original image size
+    mask_image = cv2.resize(mask_image, (image_width, image_height))
+    
+    
     # Find and Draw Contours
     contours, _ = cv2.findContours(mask_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     largest_contour = max(contours, key=cv2.contourArea)
@@ -74,9 +92,6 @@ if __name__ == "__main__":
     # Initialize the Roboflow model
     # API Key, if doesn't work, refer -->
     # https://github.com/shukkkur/VolleyVision/discussions/5#discussioncomment-7737081
-    rf = Roboflow(api_key="WQp0964J9jw76po6tElU")
-    project = rf.workspace().project("court-segmented")
-    model = project.version(1).model
 
     # Define and parse command-line arguments
     parser = argparse.ArgumentParser(description='Process an image or a video.')
@@ -90,7 +105,7 @@ if __name__ == "__main__":
 
     # Determine if input is an image or video based on file extension
     file_extension = os.path.splitext(args.input_path)[1]
-
+    print(file_extension)
     if file_extension in ['.jpg', '.png', '.jpeg']:
         # If it's an image, call process_image
         output_image_path = os.path.join(args.output_path, 'output_image.jpg')
