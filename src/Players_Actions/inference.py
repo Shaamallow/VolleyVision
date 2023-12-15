@@ -12,8 +12,8 @@ def parser_function():
     parser = argparse.ArgumentParser(description="YOLOv8 Image/Video Processing")
     parser.add_argument(
         "--model_path",
-        default="models/players/yV8_medium/weights/best.pt",
-        help="path to yolov8 model | Default : models/players/yV8_medium/weights/best.pt",
+        default="models/yolov8_players/weights/best.pt",
+        help="path to yolov8 model | Default : models/yolov8_players/weights/best.pt",
     )
     parser.add_argument(
         "--input_path",
@@ -24,7 +24,7 @@ def parser_function():
         "--output_path",
         type=str,
         default=None,
-        help="path for the output (.mp4 for videos and .jpg/.png for images) | Default : outputs/Tracking/inference.[jpg/mp4]",
+        help="path for the output (.mp4 for videos and .jpg/.png for images) | Default : outputs/Players_Actions/inference.[jpg/mp4]",
     )
     parser.add_argument(
         "--show_conf",

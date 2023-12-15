@@ -25,7 +25,7 @@ def parser_function():
     parser.add_argument(
         "--model_path",
         type=str,
-        default="models/yolov8_court/court_detection_best.pt",
+        default="models/yolov8_court/best.pt",
         help="Path to save the processed file.",
     )
 
