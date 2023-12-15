@@ -1,54 +1,49 @@
 # README
 
+## Repository Structure
+
+_Some of the folders are empty because of the size limit of github (dataset folders especially)_
+
+Hence the need to download them separately and then unzip them in the respective folders. (The folder structure is given below)
+Also, some testing videos and images are present in their corresponding data folders but not visible in the structure below for simplicity.
 ```
 .
 ├── assets
-│   ├── 3d_activity.png
-│   ├── action_Cut.jpg
-│   ├── actions_collage.png
-│   ├── actions.gif
-│   ├── actions_screen.jpg
-│   ├── app_back.png
-│   ├── app_main.png
-│   ├── header.png
-│   ├── in_progress.jpg
-│   ├── players_collage.png
-│   ├── players.gif
-│   ├── players_men.gif
-│   ├── players_red.gif
-│   ├── players_screen.jpg
-│   ├── rf_backview.gif
-│   ├── rf_men_rally.gif
-│   ├── rf_women_rally.gif
-│   ├── roboflow_logo.png
-│   ├── sliding_window.gif
-│   ├── track_men.gif
-│   ├── volley-collage.jpg
-│   ├── vv_logo.png
-│   └── y7Detect_volleyball15.gif
 ├── data
 │   ├── Court_Detection
+│   │   └── dataset
 │   ├── Player_Actions
+│   │   └── dataset
 │   └── Tracking
+│       └── dataset
 ├── docs
-│   ├── FINAL_REPORT.pdf
-│   ├── Report
-│   └── shakhansho_synopsis.docx
+│   └── screenshots
 ├── models
-│   ├── actions
-│   ├── DaSiamRPN
-│   ├── players
-│   └── yV7-tiny
+│   ├── yolov8
+│   ├── yolov8_actions
+│   ├── yolov8_court
+│   ├── yolov8_players
+│   └── yolov8_tracking
 ├── outputs
 │   ├── Court_Detection
-│   ├── Player_Actions
+│   ├── Players_Actions
 │   └── Tracking
 ├── README.md
 ├── requirements.txt
+├── runs
+│   ├── Court_Detection
+│   └── Tracking
 └── src
     ├── Court_Detection
+    │   ├── inference.py
+    │   ├── requirements.txt
+    │   └── train.py
     ├── Players_Actions
+    │   └── inference.py
     └── Tracking
+        ├── inference.py
+        ├── requirements.txt
+        └── train.py
 ```
 
 ## TODO 
