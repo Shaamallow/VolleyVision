@@ -144,6 +144,12 @@ def process_video(video_path, output_path, model, conf, marker, color):
             if ball_trajectory[i] is not None:
                 if marker == "box":
                     x, y, w, h = ball_trajectory[i]
+
+                    # Reduce the size of the box by 10%*i
+                    x += 0.05 * i * w
+                    y += 0.05 * i * h
+                    w -= 0.05 * i * w
+                    h -= 0.05 * i * h
                     cv2.rectangle(
                         image,
                         (int(x), int(y)),
@@ -153,10 +159,17 @@ def process_video(video_path, output_path, model, conf, marker, color):
                     )
                 elif marker == "circle":
                     x, y, w, h = ball_trajectory[i]
+
+                    # Reduce the size of the box by 10%*i
+                    x += 0.05 * i * w
+                    y += 0.05 * i * h
+                    w -= 0.05 * i * w
+                    h -= 0.05 * i * h
+
                     cv2.circle(
                         image,
                         (int(x + w / 2), int(y + h / 2)),
-                        10,
+                        int(w / 2),
                         color,
                         3,
                     )
