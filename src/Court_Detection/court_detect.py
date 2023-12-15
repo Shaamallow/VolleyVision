@@ -7,6 +7,31 @@ from ultralytics import YOLO
 import torch
 
 
+def parser_function():
+    parser = argparse.ArgumentParser(description="Process an image or a video.")
+    parser.add_argument(
+        "--input_path",
+        type=str,
+        default=None,
+        help="Path to the input video or image.",
+    )
+    parser.add_argument(
+        "--output_path",
+        type=str,
+        default=None,
+        help="Path to save the processed file.",
+    )
+
+    parser.add_argument(
+        "--model_path",
+        type=str,
+        default="models/yolov8_court/court_detection_best.pt",
+        help="Path to save the processed file.",
+    )
+
+    return parser
+
+
 def process_image(input_path, output_path, model):
     img = cv2.imread(input_path)
     image_height, image_width = img.shape[:2]
@@ -69,7 +94,7 @@ def process_video(input_path, output_path, model):
         image = np.array(frame)
         image_copy = image.copy()
         image_copy = cv2.resize(image_copy, (640, 640))
-        results = model(image_copy)
+        results = model(image_copy, verbose=False)
 
         result = results[0]
         # get array results
@@ -115,49 +140,32 @@ def process_video(input_path, output_path, model):
 
 if __name__ == "__main__":
     # Define and parse command-line arguments
-    parser = argparse.ArgumentParser(description="Process an image or a video.")
-    parser.add_argument(
-        "--input_path",
-        type=str,
-        default="data/Court_Detection/modena_court.jpg",
-        help="Path to the input video or image.",
-    )
-    parser.add_argument(
-        "--output_path",
-        type=str,
-        default="outputs/test",
-        help="Path to save the processed file.",
-    )
-
-    parser.add_argument(
-        "--model_path",
-        type=str,
-        default="models/yolov8_court/court_detection_best.pt",
-        help="Path to save the processed file.",
-    )
+    parser = parser_function()
     args = parser.parse_args()
-
+    input_path = args.input_path
+    output_path = args.output_path
     model_path = args.model_path
 
-    # Check if the output directory exists, if not, create it
-    if not os.path.exists(args.output_path):
-        os.makedirs(args.output_path)
+    # Verify Default input path
+    if input_path is None:
+        raise Exception("Please provide an input")
 
     # Determine if input is an image or video based on file extension
     file_extension = os.path.splitext(args.input_path)[1]
-    print(file_extension)
+
+    if output_path is None:
+        output_path = "outputs/Court_Detection/inference" + file_extension
 
     model = YOLO(model_path)
     if file_extension in [".jpg", ".png", ".jpeg"]:
-        # If it's an image, call process_image
-        output_image_path = os.path.join(args.output_path, "output_image.jpg")
-        print(args.input_path)
-        process_image(args.input_path, output_image_path, model)
+        print("Processing image...")
+        process_image(input_path, output_path, model)
     elif file_extension in [".mp4", ".avi"]:
-        # If it's a video, call process_video
-        output_video_path = os.path.join(args.output_path, "output_video.mp4")
-        process_video(args.input_path, output_video_path, model)
+        print("Processing video...")
+        process_video(input_path, output_path, model)
     else:
-        print(
-            "Invalid file type. Please provide an image (jpg, png, jpeg) or a video (mp4, avi)."
+        raise Exception(
+            "Please provide a valid input format (.jpg, jpeg, .png, .mp4, .avi)"
         )
+
+    print("Done!")
