@@ -9,11 +9,11 @@ import ultralytics
 from ultralytics import YOLO
 import torch
 
-def process_image(input_path, output_path):
+
+def process_image(input_path, output_path, model):
     img = cv2.imread(input_path)
     image_height, image_width = img.shape[:2]
-    
-    model = YOLO(f'./models/yolov8_court/court_detection_best.pt')
+
     input = cv2.resize(img, (640, 640))
     results = model.predict(input, conf=0.25, save=False)
     result = results[0]
@@ -34,10 +34,11 @@ def process_image(input_path, output_path):
     mask_image = mask_image.astype(np.uint8)
     # Resize the mask image to the original image size
     mask_image = cv2.resize(mask_image, (image_width, image_height))
-    
-    
+
     # Find and Draw Contours
-    contours, _ = cv2.findContours(mask_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours, _ = cv2.findContours(
+        mask_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+    )
     largest_contour = max(contours, key=cv2.contourArea)
     epsilon = 0.01 * cv2.arcLength(largest_contour, True)
     trapezoid = cv2.approxPolyDP(largest_contour, epsilon, True)
@@ -45,7 +46,8 @@ def process_image(input_path, output_path):
     cv2.drawContours(img, [trapezoid], 0, (0, 0, 0), 5)
     cv2.imwrite(output_path, img)
 
-def process_video(input_path, output_path):
+
+def process_video(input_path, output_path, model):
     # Load the video file
     video_capture = cv2.VideoCapture(input_path)
 
@@ -56,8 +58,10 @@ def process_video(input_path, output_path):
     total_frames = int(video_capture.get(cv2.CAP_PROP_FRAME_COUNT))
 
     # Define the codec for the output video
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    output_video = cv2.VideoWriter(output_path, fourcc, fps, (frame_width, frame_height))
+    fourcc = cv2.VideoWriter_fourcc(*"mp4v")  # pyright: ignore
+    output_video = cv2.VideoWriter(
+        output_path, fourcc, fps, (frame_width, frame_height)
+    )
 
     # Loop through each frame of the video
     for _ in tqdm(range(total_frames), desc="Processing video"):
@@ -67,9 +71,11 @@ def process_video(input_path, output_path):
             break
 
         # Process
-        cv2.imwrite('temp.jpg', frame)
-        process_image('temp.jpg', 'temp_processed.jpg')
-        frame = cv2.imread('temp_processed.jpg')
+        cv2.imwrite("temp.jpg", frame)
+        process_image("temp.jpg", "temp_processed.jpg", model)
+        frame = cv2.imread("temp_processed.jpg")
+
+        raise Exception("test")
 
         # Write the modified frame to the output video
         output_video.write(frame)
@@ -80,24 +86,36 @@ def process_video(input_path, output_path):
 
     # Destroy any remaining windows
     cv2.destroyAllWindows()
-    
+
     # Delete temporary files
-    if os.path.exists('temp.jpg'):
-        os.remove('temp.jpg')
-    if os.path.exists('temp_processed.jpg'):
-        os.remove('temp_processed.jpg')
+    if os.path.exists("temp.jpg"):
+        os.remove("temp.jpg")
+    if os.path.exists("temp_processed.jpg"):
+        os.remove("temp_processed.jpg")
 
 
 if __name__ == "__main__":
-    # Initialize the Roboflow model
-    # API Key, if doesn't work, refer -->
-    # https://github.com/shukkkur/VolleyVision/discussions/5#discussioncomment-7737081
-
     # Define and parse command-line arguments
-    parser = argparse.ArgumentParser(description='Process an image or a video.')
-    parser.add_argument('input_path', type=str, help='Path to the input video or image.')
-    parser.add_argument('--output_path', type=str, default='./Output', help='Path to save the processed file.')
+    parser = argparse.ArgumentParser(description="Process an image or a video.")
+    parser.add_argument(
+        "input_path", type=str, help="Path to the input video or image."
+    )
+    parser.add_argument(
+        "--output_path",
+        type=str,
+        default="outputs/test",
+        help="Path to save the processed file.",
+    )
+
+    parser.add_argument(
+        "--model_path",
+        type=str,
+        default="models/yolov8_court/court_detection_best.pt",
+        help="Path to save the processed file.",
+    )
     args = parser.parse_args()
+
+    model_path = args.model_path
 
     # Check if the output directory exists, if not, create it
     if not os.path.exists(args.output_path):
@@ -106,14 +124,18 @@ if __name__ == "__main__":
     # Determine if input is an image or video based on file extension
     file_extension = os.path.splitext(args.input_path)[1]
     print(file_extension)
-    if file_extension in ['.jpg', '.png', '.jpeg']:
+
+    model = YOLO(model_path)
+    if file_extension in [".jpg", ".png", ".jpeg"]:
         # If it's an image, call process_image
-        output_image_path = os.path.join(args.output_path, 'output_image.jpg')
+        output_image_path = os.path.join(args.output_path, "output_image.jpg")
         print(args.input_path)
-        process_image(args.input_path, output_image_path)
-    elif file_extension in ['.mp4', '.avi']:
+        process_image(args.input_path, output_image_path, model)
+    elif file_extension in [".mp4", ".avi"]:
         # If it's a video, call process_video
-        output_video_path = os.path.join(args.output_path, 'output_video.mp4')
-        process_video(args.input_path, output_video_path)
+        output_video_path = os.path.join(args.output_path, "output_video.mp4")
+        process_video(args.input_path, output_video_path, model)
     else:
-        print('Invalid file type. Please provide an image (jpg, png, jpeg) or a video (mp4, avi).')
+        print(
+            "Invalid file type. Please provide an image (jpg, png, jpeg) or a video (mp4, avi)."
+        )

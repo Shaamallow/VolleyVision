@@ -11,6 +11,12 @@ outputs/**
 !/outputs/**/
 !/outputs/**/.gitkeep
 
+# Remove dataset folder
+data/Tracking/dataset/
+
+# Remove runs folder
+runs/
+
 # Distribution / packaging
 .Python
 build/
