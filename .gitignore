@@ -17,6 +17,8 @@ outputs/**
 
 # Dataset for training
 data/Tracking/dataset/
+data/Court_Detection/dataset/
+!data/Tracking/.gitkeep
 
 # runs folder
 runs/**
