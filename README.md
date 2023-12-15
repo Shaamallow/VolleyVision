@@ -61,18 +61,18 @@
   - [ ] Gradio WebApp
 
 - [ ] Court Detection
-  - [ ] Local Model
-  - [ ] GPU available
+  - [x] Local Model
+  - [x] GPU available
   - [x] Script Working
-  - [ ] Change output format
-  - [ ] Train with diff perspective
+  - [x] Change output format
+  - [x] Train with diff perspective
   - [ ] Gradio WebApp
 
 - [ ] Tracking
-  - [ ] Local Model
-  - [ ] Train YoloV8
-    - [ ] use ultralytics to train and then rewrite the script for tracking
-  - [ ] GPU available
-  - [ ] Script working
+  - [x] Local Model
+  - [x] Train YoloV8
+    - [x] use ultralytics to train and then rewrite the script for tracking
+  - [x] GPU available
+  - [x] Script working
   - [ ] Train with diff perspective
   - [ ] Gradio WebApp
