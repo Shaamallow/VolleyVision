@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Big folder
+*.zip
+
 # C extensions
 *.so
 
@@ -11,11 +14,13 @@ outputs/**
 !/outputs/**/
 !/outputs/**/.gitkeep
 
-# Remove dataset folder
+
+# Dataset for training
 data/Tracking/dataset/
 
-# Remove runs folder
-runs/
+# runs folder
+runs/**
+
 
 # Distribution / packaging
 .Python
