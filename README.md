@@ -17,7 +17,7 @@ Tracking volleyball over video and images, detecting players actions and field r
 
 ## Installation
 
-We advise to use a dedicated environnement (conda, mamba, whaterver you like) to install the librairies.
+We advise to use a dedicated environnement (conda, mamba, whatever you like) to install the librairies.
 
 Clone repo : 
 
