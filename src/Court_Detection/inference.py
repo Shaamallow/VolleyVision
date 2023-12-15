@@ -131,12 +131,6 @@ def process_video(input_path, output_path, model):
     cv2.destroyAllWindows()
     out.release()
 
-    # Delete temporary files
-    if os.path.exists("temp.jpg"):
-        os.remove("temp.jpg")
-    if os.path.exists("temp_processed.jpg"):
-        os.remove("temp_processed.jpg")
-
 
 if __name__ == "__main__":
     # Define and parse command-line arguments

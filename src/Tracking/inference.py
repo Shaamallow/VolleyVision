@@ -168,7 +168,7 @@ def process_video(video_path, output_path, model, conf, marker, color):
 
                     cv2.circle(
                         image,
-                        (int(x + w / 2), int(y + h / 2)),
+                        (int(x), int(y)),
                         int(w / 2),
                         color,
                         3,

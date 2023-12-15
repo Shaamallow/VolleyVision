@@ -156,6 +156,9 @@ def process_video(
 
         # Write the annotated frame to the output video
         out.write(annotated_frame)
+    cap.release()
+    cv2.destroyAllWindows()
+    out.release()
 
 
 if __name__ == "__main__":
