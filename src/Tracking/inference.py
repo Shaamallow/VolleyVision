@@ -59,7 +59,7 @@ def parser_function():
         "--model",
         type=str,
         default="models/yolov8_tracking/best.pt",
-        help="path to yolov8 model | Default : models/yolov8_tracking/bestDpt",
+        help="path to yolov8 model | Default : models/yolov8_tracking/best.pt",
     )
     parser.add_argument(
         "--confidence", type=float, default=0.2, help="prediction confidence"
